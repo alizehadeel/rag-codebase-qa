@@ -1,0 +1,2 @@
+Exact-method-name queries sometimes rank a sibling method above the literal match.
+A generic "request method" query surfaces verb-specific wrappers over the core request implementation.

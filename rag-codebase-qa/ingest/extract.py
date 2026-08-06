@@ -12,7 +12,7 @@ def walk_repo(root):
             ext = os.path.splitext(fname)[1]
             if ext in EXTENSIONS:
                 full_path = os.path.join(dirpath, fname)
-                rel_path = os.path.relpath(full_path, root)
+                rel_path = os.path.relpath(full_path, root)#rel_path = os.path.relpath(full_path, root).replace("\\", "/")
                 yield full_path, rel_path, EXTENSIONS[ext]
 
 records = []
