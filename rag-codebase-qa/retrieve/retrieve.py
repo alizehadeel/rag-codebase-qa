@@ -3,9 +3,9 @@ import chromadb
 # pyrefly: ignore [missing-import]
 from sentence_transformers import SentenceTransformer
 
-from .metadata_filter import extract_filename_mention
-from .fusion import reciprocal_rank_fusion
-from .rerank import rerank
+from metadata_filter import extract_filename_mention
+from fusion import reciprocal_rank_fusion
+from rerank import rerank
 import pickle
 from index.build_bm25 import tokenize  # reuse the same tokenizer from Phase 3
 
