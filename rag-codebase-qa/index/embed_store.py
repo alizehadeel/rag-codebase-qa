@@ -12,11 +12,17 @@ print("Loading embedding model (bge-small)...")
 model = SentenceTransformer("BAAI/bge-small-en-v1.5")
 
 def build_embedding_text(chunk):
-    """What actually gets embedded — docstring + name carries more semantic
-    signal than raw code alone, so we prepend it when available."""
     parts = []
     if chunk.get("qualified_name"):
         parts.append(chunk["qualified_name"])
+
+    # For API-reference style doc chunks (dense bullet lists), add a
+    # synthetic natural-language framing sentence so it matches
+    # conversational questions better.
+    if chunk["chunk_type"] == "doc" and chunk.get("qualified_name"):
+        name = chunk["qualified_name"].split(">")[-1].strip().strip("`")
+        parts.append(f"This section describes the attributes, methods, and features of {name}.")
+
     if chunk.get("docstring"):
         parts.append(chunk["docstring"])
     parts.append(chunk["content"])

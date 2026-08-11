@@ -22,8 +22,8 @@ def check_recall(qa_item, retrieved_chunks, k):
 
     top_k = retrieved_chunks[:k]
     for chunk in top_k:
-        # if normalize(chunk["file_path"]) in expected_files:
-        #     return True
+        if normalize(chunk["file_path"]) in expected_files:
+             return True
         if chunk.get("qualified_name") in expected_names:
             return True
     return False

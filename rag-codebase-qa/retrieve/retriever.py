@@ -18,6 +18,25 @@ _embed_model = SentenceTransformer("BAAI/bge-small-en-v1.5")
 _client = chromadb.PersistentClient(path=CHROMA_PATH)
 _collection = _client.get_collection(COLLECTION_NAME)
 
+# retrieve/retriever.py — add near the top
+GENERIC_FILE_PENALTY = {
+    "docs/quickstart.md": 0.5,       # halve its fused score
+    "docs/troubleshooting.md": 0.5,
+    "readme.md": 0.6,
+}
+
+def apply_generic_penalty(fused, chunks_lookup):
+    adjusted = []
+    for chunk_id, score in fused:
+        chunk = chunks_lookup.get(chunk_id)
+        if chunk:
+            file_key = chunk["file_path"].lower().replace("\\", "/")
+            penalty = GENERIC_FILE_PENALTY.get(file_key, 1.0)
+            score = score * penalty
+        adjusted.append((chunk_id, score))
+    adjusted.sort(key=lambda x: x[1], reverse=True)
+    return adjusted
+
 with open(BM25_PATH, "rb") as f:
     _bm25_data = pickle.load(f)
 _bm25 = _bm25_data["bm25"]
@@ -57,6 +76,7 @@ def retrieve(query, k=5, candidate_pool=20):
 
     # 3. fuse rankings
     fused = reciprocal_rank_fusion([vector_ids, bm25_ids])
+    fused = apply_generic_penalty(fused, _chunks_lookup)   # ← add this line
     fused_ids = [cid for cid, score in fused][:candidate_pool]
 
     # 4. gather full chunk dicts for the fused candidates
