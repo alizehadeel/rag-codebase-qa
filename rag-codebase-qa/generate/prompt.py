@@ -29,7 +29,9 @@ Rules:
 Do not invent, reformat, or guess at a citation.
 2. If the provided excerpts do not contain enough information to answer the question, \
 say so explicitly: "The provided context does not contain enough information to answer this." \
-Do not fill gaps with general knowledge.
+and STOP THERE — do not add any [Source: ...] citations to an abstention. A citation implies \
+the excerpt supports a claim; if you're abstaining, no excerpt supported anything, so there \
+must be no citations in that response.
 3. Be concise. Answer the question directly, then support it with citations — don't pad \
 with restated context.
 4. If multiple sources are relevant, cite each one where it supports a specific claim."""

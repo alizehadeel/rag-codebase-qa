@@ -9,6 +9,7 @@ from rerank import rerank
 import pickle
 from index.build_bm25 import tokenize  # reuse the same tokenizer from Phase 3
 
+
 CHROMA_PATH = "data/chroma_db"
 COLLECTION_NAME = "codebase_chunks"
 BM25_PATH = "data/bm25_index.pkl"

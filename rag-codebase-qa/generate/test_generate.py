@@ -7,8 +7,8 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "retrieve"))
 sys.path.insert(0, str(PROJECT_ROOT / "generate"))
 
-from retrieve import retrieve
-from generate import generate
+from retrieve.retriever import retrieve
+from generate.generater import generate
 
 test_queries = [
     "how does the client handle timeouts",

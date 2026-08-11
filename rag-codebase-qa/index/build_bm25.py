@@ -8,26 +8,27 @@ CHUNKS_PATH = "data/chunks.jsonl"
 BM25_OUT_PATH = "data/bm25_index.pkl"
 
 def tokenize(text):
-    # simple tokenizer: lowercase, split on non-alphanumeric, keep underscores
-    # (keeping underscores matters — "get_response" as one token beats splitting it)
-    return re.findall(r"[a-zA-Z_][a-zA-Z0-9_]*", text.lower())
+    words = re.findall(r"[a-zA-Z_][a-zA-Z0-9_]*", text.lower())
+    versions = re.findall(r"\d+\.\d+(?:\.\d+)?", text)
+    return words + versions
 
-print("Loading chunks...")
-chunks = [json.loads(line) for line in open(CHUNKS_PATH)]
+# Keep the imports, constants, and tokenize() function definition at the top
 
-print("Tokenizing...")
-tokenized_corpus = [tokenize(c["content"]) for c in chunks]
+if __name__ == "__main__":
+    print("Loading chunks...")
+    chunks = [json.loads(line) for line in open(CHUNKS_PATH)]
 
-print("Building BM25 index...")
-bm25 = BM25Okapi(tokenized_corpus)
+    print("Tokenizing...")
+    tokenized_corpus = [tokenize(c["content"]) for c in chunks]
 
-# save both the index and the chunk metadata (BM25 only knows about token lists,
-# not your chunk_ids, so we save them side by side to map results back)
-with open(BM25_OUT_PATH, "wb") as f:
-    pickle.dump({
-        "bm25": bm25,
-        "chunk_ids": [c["chunk_id"] for c in chunks],
-        "chunks_lookup": {c["chunk_id"]: c for c in chunks},
-    }, f)
+    print("Building BM25 index...")
+    bm25 = BM25Okapi(tokenized_corpus)
 
-print(f"Saved BM25 index for {len(chunks)} chunks to {BM25_OUT_PATH}")
+    with open(BM25_OUT_PATH, "wb") as f:
+        pickle.dump({
+            "bm25": bm25,
+            "chunk_ids": [c["chunk_id"] for c in chunks],
+            "chunks_lookup": {c["chunk_id"]: c for c in chunks},
+        }, f)
+
+    print(f"Saved BM25 index for {len(chunks)} chunks to {BM25_OUT_PATH}")
